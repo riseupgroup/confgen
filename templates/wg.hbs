@@ -1,0 +1,18 @@
+[Interface]
+PrivateKey = {{privkey}}
+ListenPort = {{listen_port}}
+Table = off
+Address = {{self_ll_ipv6}}
+PostUp = ip addr add {{peer_ipv6}} dev %i
+{{#if peer_ipv4 }}
+PostUp = ip addr add {{self_ipv4}} peer {{peer_ipv4}}/32 dev %i
+{{/if}}
+PostUp = ip addr add {{self_ll_ipv6}}/128 peer {{peer_ll_ipv6}}/128 dev %i
+PostUp = sysctl -w net.ipv6.conf.%i.autoconf=0
+
+
+[Peer]
+PublicKey = {{peer_pubkey}}
+Endpoint = {{peer_endpoint}}
+AllowedIPs = 172.20.0.0/14, fd00::/8, fe80::/64
+PersistentKeepalive = 25

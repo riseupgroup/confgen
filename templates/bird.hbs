@@ -1,0 +1,3 @@
+protocol bgp {{name}}{{#unless peer_ipv4 }}_v6{{/unless}} from dnpeers {
+    neighbor {{#if peer_ipv4}}{{peer_ipv4}}{{else}}{{peer_ll_ipv6}}%dn42peer{{num}}{{/if}} as 4242421722;
+};
