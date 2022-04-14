@@ -68,7 +68,7 @@ def gen(what = "wg"):
     os.makedirs(folder)
     for i, peer in enumerate(peers):
         out = templates[what](peers[i])
-        with open(os.path.join(folder, f"dn42peer{i}_{peers[i]['name']}.conf"), "w") as f:
+        with open(os.path.join(folder, f"dn42peer{i}.conf"), "w") as f:
             f.write(out)
 
 
