@@ -10,9 +10,9 @@ It will delete all old config files on each regeneration.
 ```bash
 # Are you sure?
 # rm -rf /etc/bird/peers/ebgp
-ln -s ./configs/bird /etc/bird/peers/ebgp
+ln -s /root/confgen/configs/bird /etc/bird/peers/egp
 
 # Are you sure?
 # rm -rf /etc/wireguard/peers/ebgp
-ln -s ./configs/wg /etc/wireguard/peers/ebgp
+ln -s /root/confgen/configs/wg /etc/wireguard/peers/egp
 ```
