@@ -42,15 +42,21 @@ config_dir = "./configs"
 
 ## main
 
+opt_if_mp_bgp_attr = ["self_ll_ipv4", "peer_ll_ipv4"]
+
 def conv():
     names = csv[0]
     objs = []
-    for i, row in enumerate(csv[1:]):
+    for i, row in enumerate(csv[2:]): # skip attribute names and default values
         obj = {}
         for i2, name, in enumerate(names):
-            if not row[i2] and name != "peer_ipv4":
-                raise AttributeError(f"Attribute '{name}' missing on config nr {i}!")     
             obj[name] = row[i2]
+
+        for k in obj.keys():
+            if not obj[k] and obj["mp_bgp"] != "yes" and (obj[k] not in opt_if_mp_bgp_attr):
+                raise AttributeError(f"Attribute '{k}' missing on config nr {i}!")    
+            if obj[k] == "no":
+                obj[k] = "" # for handlebars 
         objs.append(obj)
     return objs
     
@@ -58,14 +64,13 @@ peers = conv()
 
 def clear_folder(path):
     for root, dirs, files in os.walk(path):
-        for f in files:
-            os.unlink(os.path.join(root, f))
         for d in dirs:
             shutil.rmtree(os.path.join(root, d))
 
-def gen(what = "wg"):
+def gen(what):
     folder = os.path.join(config_dir, what)
     os.makedirs(folder)
+    clear_folder(folder)
     for i, peer in enumerate(peers):
         out = templates[what](peers[i])
         with open(os.path.join(folder, f"dn42peer{i}.conf"), "w") as f:
