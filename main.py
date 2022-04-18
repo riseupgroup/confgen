@@ -7,6 +7,8 @@ import gspread
 import os
 import shutil
 
+import sys
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -82,3 +84,31 @@ clear_folder(config_dir)
 # Wireguard
 for k in templates.keys():
     gen(k)
+
+## apply configs
+
+
+
+### Wireguard
+config_only = False
+
+if "-c" in sys.argv or "--config-only" in sys.argv:
+    config_only = True
+    print("Generating configs only!")
+
+if not config_only: os.system('for f in /etc/wireguard/peers/egp/*; do wg-quick down $f; done')
+os.system('rm -f /etc/wireguard/peers/egp/*')
+os.system('mkdir -p /etc/wireguard/peers/egp ## if not already there')
+os.system('cp ./configs/wg/* /etc/wireguard/peers/egp/')
+os.system('chmod 660 /etc/wireguard/peers/ -R')
+
+if not config_only: os.system('for f in /etc/wireguard/peers/egp/*; do wg-quick up $f; done')
+
+### Bird
+os.system('rm -f /etc/bird/peers/egp/*')
+os.system('mkdir -p /etc/bird/peers/egp ## if not already there')
+os.system('cp ./configs/bird/* /etc/bird/peers/egp/')
+os.system('chown bird:bird /etc/bird/peers/*')
+os.system('chmod 550 /etc/bird/peers/* # yes, 550 is correect for some reason')
+if not config_only: os.system('birdc configure')
+
