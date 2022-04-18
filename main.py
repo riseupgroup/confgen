@@ -85,9 +85,7 @@ clear_folder(config_dir)
 for k in templates.keys():
     gen(k)
 
-## apply configs
-
-
+## apply configuration
 
 ### Wireguard
 config_only = False
